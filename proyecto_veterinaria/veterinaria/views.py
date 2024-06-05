@@ -23,6 +23,11 @@ def not_logged_client(req):
     return HttpResponse('Debe haber iniciado sesion')
 ##
 
+##STATIC
+
+def  blog_view(req):
+    return render( req, 'static_tmp/blog.html', {**session.get_context()} )
+
 @csrf_exempt
 def get_pets(req):
     return JsonResponse( {idx:pet.json() for idx, pet in enumerate(Pet.objects.filter(  ))}, safe=False )
