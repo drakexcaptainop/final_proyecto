@@ -329,6 +329,14 @@ def delete_allergy_post(req: HttpRequest):
 
 
  ## DOCTOR
+def doctor_pet_search(req):
+    if req.method == 'POST':
+        pname = req.POST['name']
+        pets = Pet.objects.filter( name = pname )
+    else:
+        pets = None
+    return render( req, 'temp/doctor/pet/doctor_pet_search.html', {**session.get_context(), 'pets': pets} )
+
 def doctor_main_view(req: HttpRequest):
     return redirect( main )
 

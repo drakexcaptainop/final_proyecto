@@ -43,6 +43,7 @@ urlpatterns = [
 
     ##DOCTORS
     path('doctors_view', all_doctors_view, name='doctors_view'),
+    path('doctor_pet_search_view', doctor_pet_search, name='doctor_search_pet_view'),
     path('doctor_main_view', doctor_main_view, ),
     path('doctor_appointments_view', doctor_appointments_view, name='doctor_appointments_view'),
     path('doctor_appointment_view', doctor_appointment_view, name='doctor_appointment_view'),
