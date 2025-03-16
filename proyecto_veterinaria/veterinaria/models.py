@@ -23,7 +23,7 @@ class PET_SURGERY_STATUS:
     INACTIVE = 0
 
 
-
+#asdasd
 class User(models.Model):
     name = models.CharField(max_length=100)
     contact_number = models.IntegerField()
