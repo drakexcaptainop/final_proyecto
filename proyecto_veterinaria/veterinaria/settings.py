@@ -30,3 +30,11 @@ LOGGING = {
         },
     },
 }
+
+# Database Encryption (example using django-encrypted-model-fields)
+INSTALLED_APPS = [
+    # ...existing code...
+    'encrypted_model_fields',
+]
+
+FIELD_ENCRYPTION_KEYS = [b'your-secret-key']

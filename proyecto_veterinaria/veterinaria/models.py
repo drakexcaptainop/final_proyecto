@@ -5,6 +5,7 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+
 # Create your models here.
 class USER_TYPE:
     DOCTOR = 0

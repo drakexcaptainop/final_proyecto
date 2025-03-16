@@ -43,7 +43,9 @@ def get_model_or_none( T: models.Model ,**kwargs ):
 
 def user_login( email, password ):
     global current_client, current_user
-    user: User = get_model_or_none( User, email=email, password=password )
+    user: User = get_model_or_none( User, email=email)
+    if not user.check_password( password ):
+        return None, None
     if user:
         if user.type == USER_TYPE.CLIENT:
             sub_user = get_model_or_none( Client, user = user )
@@ -58,7 +60,7 @@ def user_login( email, password ):
 
 
 def login_user(req: HttpRequest):
-    user_login( req.POST['email'], req.POST['password'] )
+    f1, f2  = user_login( req.POST['email'], req.POST['password'] )
     if session.is_client_logged():
         return redirect( main )
     elif session.is_doctor_logged():
