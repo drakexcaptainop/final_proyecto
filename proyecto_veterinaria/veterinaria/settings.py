@@ -17,15 +17,16 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/path/to/your/logfile.log',
+        },
     },
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'DEBUG',      'level': 'DEBUG',
-            'propagate': True,ss': 'logging.FileHandler',
-        },me': '/path/to/your/logfile.log',
-    },
-}
+            'level': 'DEBUG',
+            'propagate': True,
         },
     },
 }
