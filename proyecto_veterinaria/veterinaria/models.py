@@ -60,20 +60,27 @@ class User(models.Model):
             'type': self.type,
         }
 
+class Doctor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    specialization = models.CharField(max_length=100, null=True, blank=True)  # Nuevo campo
+    license_number = models.CharField(max_length=50, unique=True, null=True, blank=True)  # Nuevo campo
+    languages = models.CharField(max_length=200, null=True, blank=True)  # Nuevo campo
+    years_of_experience = models.IntegerField(null=True, blank=True)  # Nuevo campo
 
-class Doctor( models.Model ):
-    user = models.OneToOneField( User, on_delete = models.CASCADE )
     def json(self):
-        return self.user.json()
+        return {
+            'id': self.pk,
+            'name': self.user.name,
+            'specialization': self.specialization,
+            'license_number': self.license_number,
+            'languages': self.languages,
+            'years_of_experience': self.years_of_experience,
+        }
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     def json(self):
         return self.user.json()
-
-
-
-
 
 class Pet(models.Model):
     name = models.CharField(max_length=100)
@@ -142,7 +149,6 @@ class PetSurgery(models.Model):
             'pet':self.pet.pk,
             'doctor':self.doctor.pk,
         } 
-
 
 class Appointment(models.Model):
     client = models.ForeignKey( Client, on_delete=models.CASCADE )
