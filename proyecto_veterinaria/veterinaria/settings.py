@@ -1,5 +1,5 @@
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
 
 # Enable HTTPS
@@ -17,16 +17,15 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/path/to/your/logfile.log',
-        },
     },
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
+            'level': 'DEBUG',      'level': 'DEBUG',
+            'propagate': True,ss': 'logging.FileHandler',
+        },me': '/path/to/your/logfile.log',
+    },
+}
         },
     },
 }
