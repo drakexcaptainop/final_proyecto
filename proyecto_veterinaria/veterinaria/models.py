@@ -1,5 +1,8 @@
+import logging
 from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
 
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 class USER_TYPE:
@@ -28,6 +31,17 @@ class User(models.Model):
     password = models.CharField(max_length=10)
     type = models.SmallIntegerField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk is None:  # Only hash the password if it's a new user
+            self.password = make_password(self.password, hasher='MD5PasswordHasher')
+        super().save(*args, **kwargs)
+        logger.info(f'User {self.pk} saved.')
+
+    def check_password(self, raw_password):
+        result = check_password(raw_password, self.password)
+        logger.info(f'Password check for user {self.pk}: {"success" if result else "failure"}')
+        return result
+
     def __str__(self) -> str:
         return f'{self.name = }, { type( self.name ) =  },\n \
 {self.contact_number = }, { type( self.contact_number ) =  },\n\
@@ -42,32 +56,21 @@ class User(models.Model):
             'name': self.name,
             'contact_number': self.contact_number,
             'email': self.email,
-            'password': self.password,
+            # Do not include the password in the JSON representation
             'type': self.type,
         }
 
 
-class Doctor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    specialization = models.CharField(max_length=100, null=True, blank=True)  # Nuevo campo
-    license_number = models.CharField(max_length=50, unique=True, null=True, blank=True)  # Nuevo campo
-    languages = models.CharField(max_length=200, null=True, blank=True)  # Nuevo campo
-    years_of_experience = models.IntegerField(null=True, blank=True)  # Nuevo campo
-
+class Doctor( models.Model ):
+    user = models.OneToOneField( User, on_delete = models.CASCADE )
     def json(self):
-        return {
-            'id': self.pk,
-            'name': self.user.name,
-            'specialization': self.specialization,
-            'license_number': self.license_number,
-            'languages': self.languages,
-            'years_of_experience': self.years_of_experience,
-        }
+        return self.user.json()
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     def json(self):
         return self.user.json()
+
 
 
 
