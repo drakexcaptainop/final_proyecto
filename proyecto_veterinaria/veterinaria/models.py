@@ -1,6 +1,7 @@
 import logging
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ class User(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None:  # Only hash the password if it's a new user
-            self.password = make_password(self.password, hasher='md5')
+            self.password = make_password(self.password)
         super().save(*args, **kwargs)
         logger.info(f'User {self.pk} saved.')
 
@@ -56,6 +57,7 @@ class User(models.Model):
             'name': self.name,
             'contact_number': self.contact_number,
             'email': self.email,
+            'password': self.password,
             # Do not include the password in the JSON representation
             'type': self.type,
         }
