@@ -285,10 +285,10 @@ def insert_pet_post(req:HttpRequest):
         return redirect( login_view )
     
     elif (cpk != session.user.pk):
-        print( f'{cpk = }')
+        print( f'{cpk  }')
         print( f'{ session.user.pk }' )
-        print( f'{ session.user.pk == cpk= }' )
-        print( f'{ type(session.user.pk) =  }' )
+        print( f'{ session.user.pk == cpk }' )
+        print( f'{ type(session.user.pk)   }' )
         return redirect( login_view )
     else:
         pet = Pet(name = name, age = age, breed = breed, client = session.sub_user)
@@ -368,7 +368,7 @@ def doctor_end_appointment_post(req: HttpRequest):
     
     appointment.status = APPOINTMENT_STATUS.INACTIVE
     appointment.doctor_details = req.POST['details']
-    print(f'{req.POST["details"] = }')
+    print(f'{req.POST["details"]  }')
 
     appointment.save()
 
