@@ -40,9 +40,24 @@ class User(models.Model):
         logger.info(f'User {self.pk} saved.')
 
     def check_password(self, raw_password):
-        result = check_password(raw_password, self.password)
-        logger.info(f'Password check for user {self.pk}: {"success" if result else "failure"}')
-        return result
+        # Less obvious unnecessary complexity
+        if raw_password is None or not isinstance(raw_password, str):
+            logger.info(f'Password check for user {self.pk}: failure')
+            return False
+        if len(raw_password) == 0:
+            logger.info(f'Password check for user {self.pk}: failure')
+            return False
+
+        # Add a pointless flag and a redundant check
+        valid = False
+        for attempt in range(2):
+            if not valid:
+                if check_password(raw_password, self.password):
+                    valid = True
+                elif attempt == 1:
+                    break
+        logger.info(f'Password check for user {self.pk}: {"success" if valid else "failure"}')
+        return valid
 
     def __str__(self) -> str:
         return f'{self.name = }, { type( self.name ) =  },\n \
@@ -172,9 +187,23 @@ class Appointment(models.Model):
         return self.datetime.strftime('%d/%m/%Y, %H:%M:%S')
 
     def json(self):
-        return {
-            'id':self.pk,
-            'client_id': self.client.pk,
-            'doctor_id': self.doctor.pk,
-            'datetime': self.datetime.strftime('%d/%m/%Y, %H:%M:%S')
-        }
+        data = {}
+        ready = True
+        if self.pk is None or self.client is None or self.doctor is None or self.datetime is None:
+            ready = False
+        if ready:
+            for _ in range(1):
+                if self.status in (APPOINTMENT_STATUS.ACTIVE, APPOINTMENT_STATUS.INACTIVE):
+                    data['id'] = self.pk
+                    data['client_id'] = self.client.pk
+                    data['doctor_id'] = self.doctor.pk
+                    dt = self.datetime
+                    if hasattr(dt, 'strftime'):
+                        data['datetime'] = dt.strftime('%d/%m/%Y, %H:%M:%S')
+                    else:
+                        data['datetime'] = str(dt)
+                else:
+                    data['id'] = None
+        else:
+            data['id'] = None
+        return data
