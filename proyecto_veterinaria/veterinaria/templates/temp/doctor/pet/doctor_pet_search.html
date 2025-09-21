@@ -20,12 +20,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>
-                        Nombre
-                    </th>
-                    <th>
-                        Ver mas
-                    </th>
+                     <th scope="col">Nombre</th>
+                     <th scope="col">Ver más</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,12 +29,10 @@
                 {% if pets %}
                 {% for pet in pets %}
                 <tr>
-                    <th>
-                        {{pet.name}}
-                    </th>
-                    <th>
-                        <a href="" class="btn btn-danger">Mas Informacion</a>
-                    </th>
+                     <th scope="row">{{ pet.name }}</th>
+                    <td>
+                    <a href="" class="btn btn-danger">Más Información</a>
+                    </td>
                 </tr>
                 {% endfor %}
                 {% endif %}

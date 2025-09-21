@@ -15,14 +15,15 @@
        <h3><strong class="text-danger">Citas Pendientes</strong></h3>
        <table class="table table-striped" id="customers">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Hora y Fecha</th>
-                <th>Cliente</th>
-                <th>Mascota</th>
-                <th>Editar</th>
-              </tr>
-        </thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Hora y Fecha</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Mascota</th>
+        <th scope="col">Editar</th>
+    </tr>
+</thead>
+
         <tbody>
             {%for fmtddate, appointment in appointments%}
             {% if appointment.is_active %}
@@ -49,14 +50,16 @@
        <h3><strong class="text-success">Citas Inactivas</strong></h3>
        <table class="table table-striped" id="customers">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Hora y Fecha</th>
-                <th>Cliente</th>
-                <th>Mascota</th>
-                <th>Editar</th>
-              </tr>
-        </thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Hora y Fecha</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Mascota</th>
+        <th scope="col">Editar</th>
+    </tr>
+</thead>
+
+
         <tbody>
             {%for fmtddate, appointment in appointments%}
             {% if not appointment.is_active %}
