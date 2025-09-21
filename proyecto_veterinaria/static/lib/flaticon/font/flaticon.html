@@ -27,7 +27,9 @@
         padding: 0;
         border: 0;
         font-size: 100%;
-        font: inherit;
+       font-family: inherit;
+        font-weight: inherit;
+        font-style: inherit;
         vertical-align: baseline;
     }
     /* HTML5 display-role reset for older browsers */
@@ -72,7 +74,7 @@
         padding: 0;
     }
     [class^="flaticon-"]:before, [class*=" flaticon-"]:before, [class^="flaticon-"]:after, [class*=" flaticon-"]:after {
-        font-family: Flaticon;
+        font-family: Flaticon, sans-serif;
         font-size: 30px;
         font-style: normal;
         margin-left: 20px;
@@ -179,7 +181,7 @@
     .glyph .glyph-icon {
         padding: 10px;
         display: block;
-        font-family:"Flaticon";
+        font-family:"Flaticon", sans-serif;
         font-size: 64px;
         line-height: 1;
     }
@@ -191,7 +193,6 @@
     .class-name {
         font-size: 0.65em;
         background-color: #222;
-        color: #fff;
         border-radius: 4px 4px 0 0;
         padding: 0.5em;
         color: #FFFF99;
@@ -225,7 +226,7 @@
         cursor: text;
     }
     .glyph > input.icon-input {
-        font-family:"Flaticon";
+        font-family:"Flaticon", sans-serif;
         font-size: 16px;
         margin-bottom: 10px;
     }
@@ -235,7 +236,6 @@
     .attribution textarea {
         background-color: #fcfcfd;
         padding: 1em;
-        border: none;
         box-shadow: none;
         border: 1px solid #DEDEE4;
         border-radius: 4px;
