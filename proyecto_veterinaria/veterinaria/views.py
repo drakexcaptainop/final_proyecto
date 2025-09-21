@@ -66,7 +66,7 @@ def user_login( email, password ):
     if not user:
         print("user not found")
         logger.warning("user_login: user not found")
-    if not user or not user.check_password( password ):
+    if not user.check_password( password ):
         print("user_login failed password check")
         logger.warning("user_login: password check failed")
         return None, None
@@ -174,6 +174,7 @@ def register_client(req: HttpRequest):
         type = USER_TYPE.CLIENT
         
         user = User(name=name, email=email, contact_number=contact_number, password=password, type=type)
+        user.set_password( password )
         user.save()
         
         client = Client(user=user)
