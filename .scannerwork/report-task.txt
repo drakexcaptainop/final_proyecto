@@ -2,5 +2,5 @@ projectKey=hullitas-con-errores_v2
 serverUrl=http://localhost:9000
 serverVersion=25.9.0.112764
 dashboardUrl=http://localhost:9000/dashboard?id=hullitas-con-errores_v2
-ceTaskId=b7f5cd80-ae23-4d52-8734-116e2508b7db
-ceTaskUrl=http://localhost:9000/api/ce/task?id=b7f5cd80-ae23-4d52-8734-116e2508b7db
+ceTaskId=fedfc741-7120-4438-b475-fb799bbd6a98
+ceTaskUrl=http://localhost:9000/api/ce/task?id=fedfc741-7120-4438-b475-fb799bbd6a98
