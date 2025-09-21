@@ -3,9 +3,8 @@
 
 <div class="container">
 
-    <form method="post" action="insert_pet_post">
+    <form method="post" action="{% url 'insert_pet_post' %}">
         {% csrf_token %}
-        
           <fieldset>
             <input name="pk" value="{{current_user.pk}}" type="hidden">
             <legend>Datos de la mascota</legend>

@@ -38,3 +38,5 @@ INSTALLED_APPS = [
 ]
 
 FIELD_ENCRYPTION_KEYS = [b'your-secret-key']
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]

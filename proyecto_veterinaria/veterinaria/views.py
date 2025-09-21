@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from .models import *
 from datetime import datetime
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
+from django.views.decorators.http import require_POST
 from .session_handle import _Session
 import logging
 
@@ -39,7 +40,6 @@ def  blog_view(req):
     logger.info("blog_view accessed")
     return render( req, 'static_tmp/blog.html', {**session.get_context()} )
 
-@csrf_exempt
 def get_pets(req):
     print("get_pets called")
     logger.info("get_pets accessed")
@@ -101,7 +101,6 @@ def login_user(req: HttpRequest):
         print("redirecting to register_view")
         return redirect( register_view ) 
 
-@csrf_exempt
 def login_client(req: HttpRequest):
     print("login_client called")
     logger.info("login_client accessed")
@@ -153,7 +152,6 @@ def main(req: HttpRequest):
     logger.info("main view accessed")
     return render(req, 'home/index.html', session.get_context())
 
-@csrf_exempt
 def register_client(req: HttpRequest):
     print("register_client called")
     logger.info("register_client accessed")
@@ -339,6 +337,7 @@ def edit_client(req: HttpRequest):
 ##
 
 
+
 ##PETS
 def insert_pet_view(req: HttpRequest):
     return render(req, 'pet/insert_pet.html', {**session.get_context()})
@@ -349,8 +348,7 @@ def all_pets_view(req: HttpRequest):
     client_pets = Pet.objects.filter( client = session.sub_user )
     return render( req, 'pet/all_pets.html', {**session.get_context(), 'pets': client_pets} )
 
-
-@csrf_exempt
+@require_POST
 def insert_pet_post(req:HttpRequest):
     print("insert_pet_post called")
     logger.info("insert_pet_post accessed")
