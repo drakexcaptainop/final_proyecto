@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from .models import *
+from .models import Doctor, User, Client, models, USER_TYPE, Appointment, Pet, PetAllergy
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 current_user: User = None
@@ -216,7 +216,7 @@ def insert_pet_api(req: HttpRequest):
         try:
             user = User.objects.get( pk = int(req.POST['user_id']) )
             target_client = Client.objects.get( user = user )
-        except:
+        except Exception:
             return INVALID
         
 

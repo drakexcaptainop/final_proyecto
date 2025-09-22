@@ -3,8 +3,8 @@ from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 
 logger = logging.getLogger(__name__)
-
-
+DATE_FMT = '%d/%m/%Y'
+TIME_FMT = '%H:%M:%S'
 # Create your models here.
 class USER_TYPE:
     DOCTOR = 0
@@ -125,7 +125,7 @@ class PetVaccine(models.Model):
 
     @property
     def fmtdate(self):
-        return self.date.strftime( '%d/%m/%Y' )
+        return self.date.strftime( DATE_FMT )
 
 class PetSurgery(models.Model):
     pet = models.ForeignKey( Pet, on_delete = models.CASCADE )
@@ -137,7 +137,7 @@ class PetSurgery(models.Model):
 
     @property
     def fmtdate(self):
-        return self.datetime.strftime( '%d/%m/%Y, %H:%M:%S' )
+        return self.datetime.strftime( f'{DATE_FMT}, {TIME_FMT}' )
 
     def json(self):
         return {
@@ -163,7 +163,7 @@ class Appointment(models.Model):
     
     @property
     def fmtdate(self):
-        return self.datetime.strftime('%d/%m/%Y, %H:%M:%S')
+        return self.datetime.strftime(f'{DATE_FMT}, {TIME_FMT}')
 
     def json(self):
         data = {}
@@ -178,7 +178,7 @@ class Appointment(models.Model):
                     data['doctor_id'] = self.doctor.pk
                     dt = self.datetime
                     if hasattr(dt, 'strftime'):
-                        data['datetime'] = dt.strftime('%d/%m/%Y, %H:%M:%S')
+                        data['datetime'] = dt.strftime(f'{DATE_FMT}, {TIME_FMT}')
                     else:
                         data['datetime'] = str(dt)
                 else:
