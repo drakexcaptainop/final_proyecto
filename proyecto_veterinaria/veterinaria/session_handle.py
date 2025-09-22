@@ -37,7 +37,7 @@ class _Session:
     def is_doctor_logged(self):
         return self.is_logged() and self.is_doctor()
 
-    def is_logged(self, cache={}):  # Mutable default argument
+    def is_logged(self):  # Mutable default argument
         # Reliability issue: using mutable default argument
         return self.user and self.sub_user
     

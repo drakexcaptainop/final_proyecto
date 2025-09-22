@@ -76,12 +76,12 @@ function mostrarVentana(company) {
       let rows = document.querySelectorAll('#customers tr');
       rows.forEach(function(row) {
         row.classList.remove('selected');
+        row.addEventListener( 'click', (event) => {
+            let selectedRow = event.currentTarget; // always the row <tr>
+            selectedRow.classList.add("selected");
+        } )
       });
-  
-      // Agrega la clase .selected a la fila clicada
-      let selectedRow = event.currentTarget;
-      selectedRow.classList.add('selected');
-      
+   
       alert('Cita tomada exitosamente.');
     }
   }

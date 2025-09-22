@@ -29,23 +29,16 @@ def template2_test(req):
     logger.info("template2_test view accessed")
     return render(req, 'temp/test.html' )
 
-def not_logged_client(req):
-    print("not_logged_client called")
-    logger.warning("not_logged_client accessed")
+def not_logged_client( _ ):
     return HttpResponse('Debe haber iniciado sesion')
 ##
-
+ 
 ##STATIC
 
 def  blog_view(req):
     print("blog_view called")
     logger.info("blog_view accessed")
     return render( req, 'static_tmp/blog.html', {**session.get_context()} )
-
-def get_pets(req):
-    print("get_pets called")
-    logger.info("get_pets accessed")
-    return JsonResponse( {idx:pet.json() for idx, pet in enumerate(models.Pet.objects.filter(  ))}, safe=False )
 
 def get_model_or_none( T: models.Model ,**kwargs ):
     print(f"get_model_or_none called for {T} with {kwargs}")
@@ -92,7 +85,7 @@ def user_login( email, password ):
 def login_user(req: HttpRequest):
     print("login_user called")
     logger.info("login_user accessed")
-    f1, f2  = user_login( req.POST['email'], req.POST['password'] )
+    user_login( req.POST['email'], req.POST['password'] )
     if session.is_client_logged():
         print("redirecting to main (client)")
         return redirect( main )
@@ -114,25 +107,13 @@ def login_client(req: HttpRequest):
         print("login_client: session not logged, redirecting to register_view")
         return redirect( register_view )
 
-    # print(req.POST)
-    # email = req.POST['email']
-    # password = req.POST['password']
 
-    # users = User.objects.filter( email=email, password=password)
-    # if users.exists():
-    #     current_user = users.first()
-
-    #     current_client = Client.objects.filter(user=current_user).first()
-        
-    #     return redirect(main)
-    # else:
-    #     return redirect(login_view)
 
 
 def login_view(req:HttpRequest):
     return render(req, 'auth/auth.html', session.get_context())
 
-def logout_post(req):
+def logout_post(_):
     print("logout_post called")
     logger.info("logout_post accessed")
     global current_user, current_client
@@ -171,9 +152,9 @@ def register_client(req: HttpRequest):
         print("User does not exist, creating new user")
         logger.info("register_client: creating new user")
 
-        type = models.USER_TYPE.CLIENT
+        user_type = models.USER_TYPE.CLIENT
         
-        user = models.User(name=name, email=email, contact_number=contact_number, password=password, type=type)
+        user = models.User(name=name, email=email, contact_number=contact_number, password=password, type=user_type)
         user.set_password( password )
         user.save()
         
@@ -239,7 +220,7 @@ def all_appointments_view(req:HttpRequest):
         return redirect( login_view )
     
 
-def delete_appointment(req: HttpRequest, pk):
+def delete_appointment(_: HttpRequest, pk):
     print(f"delete_appointment called for pk={pk}")
     logger.info(f"delete_appointment accessed for pk={pk}")
     appointment = models.Appointment.objects.get( pk = pk )
