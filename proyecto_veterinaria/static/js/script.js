@@ -4,11 +4,11 @@ document.getElementById("btn__registrarse").addEventListener("click", register);
 window.addEventListener("resize", anchoPage);
 
 //Declarando variables
-var formulario_login = document.querySelector(".formulario__login");
-var formulario_register = document.querySelector(".formulario__register");
-var contenedor_login_register = document.querySelector(".contenedor__login-register");
-var caja_trasera_login = document.querySelector(".caja__trasera-login");
-var caja_trasera_register = document.querySelector(".caja__trasera-register");
+const formulario_login = document.querySelector(".formulario__login");
+const formulario_register = document.querySelector(".formulario__register");
+const contenedor_login_register = document.querySelector(".contenedor__login-register");
+const caja_trasera_login = document.querySelector(".caja__trasera-login");
+const caja_trasera_register = document.querySelector(".caja__trasera-register");
 
 
     //FUNCIONES
@@ -69,17 +69,17 @@ function iniciarSesion(){
 }
 
 function mostrarVentana(company) {
-    var confirmacion = confirm('¿Desea tomar la cita para ' + company + '?');
+    let confirmacion = confirm('¿Desea tomar la cita para ' + company + '?');
     
     if (confirmacion) {
       // Elimina la clase .selected de cualquier fila que la tenga
-      var rows = document.querySelectorAll('#customers tr');
+      let rows = document.querySelectorAll('#customers tr');
       rows.forEach(function(row) {
         row.classList.remove('selected');
       });
   
       // Agrega la clase .selected a la fila clicada
-      var selectedRow = event.currentTarget;
+      let selectedRow = event.currentTarget;
       selectedRow.classList.add('selected');
       
       alert('Cita tomada exitosamente.');
