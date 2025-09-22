@@ -1,5 +1,5 @@
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
+    "django.contrib.auth.hashers.Argon2PasswordHasher"
 ]
 
 # Enable HTTPS
@@ -38,3 +38,5 @@ INSTALLED_APPS = [
 ]
 
 FIELD_ENCRYPTION_KEYS = [b'your-secret-key']
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]

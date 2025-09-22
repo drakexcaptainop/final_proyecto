@@ -1,7 +1,6 @@
 import logging
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -33,32 +32,12 @@ class User(models.Model):
     password = models.CharField(max_length=10)
     type = models.SmallIntegerField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        if self.pk is None:  # Only hash the password if it's a new user
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-        logger.info(f'User {self.pk} saved.')
-
-    def check_password(self, raw_password):
-        # Less obvious unnecessary complexity
-        if raw_password is None or not isinstance(raw_password, str):
-            logger.info(f'Password check for user {self.pk}: failure')
-            return False
-        if len(raw_password) == 0:
-            logger.info(f'Password check for user {self.pk}: failure')
-            return False
-
-        # Add a pointless flag and a redundant check
-        valid = False
-        for attempt in range(2):
-            if not valid:
-                if check_password(raw_password, self.password):
-                    valid = True
-                elif attempt == 1:
-                    break
-        logger.info(f'Password check for user {self.pk}: {"success" if valid else "failure"}')
-        return valid
-
+    def set_password(self, passw):
+        self.password = make_password( passw )
+        return self
+    def check_password(self, passw):
+        return check_password( passw, self.password )
+    
     def __str__(self) -> str:
         return f'{self.name = }, { type( self.name ) =  },\n \
 {self.contact_number = }, { type( self.contact_number ) =  },\n\

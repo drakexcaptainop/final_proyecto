@@ -22,6 +22,7 @@
     <div class="contenedor__login-register">
         <!--Login-->
         <form action="login_post" method="post" class="formulario__login">
+            {% csrf_token %}
             <h2>Iniciar Sesión</h2>
             <input name="email" type="text" placeholder="Correo Electronico">
             <input name="password" type="password" placeholder="Contraseña">
@@ -31,6 +32,7 @@
      
         <!--Register-->
         <form action="register_post" method="post" class="formulario__register">
+            {% csrf_token %}
             <h2>Regístrarse</h2>
             <input name="name" type="text" placeholder="Nombre de Usuario">
             <input name='email' type="text" placeholder="Correo Electronico">
