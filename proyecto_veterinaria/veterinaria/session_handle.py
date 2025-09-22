@@ -42,20 +42,8 @@ class _Session:
         return self.user and self.sub_user
     
     def set(self, user, sub_user):
-        try:
-            if user:
-                if sub_user is None:
-                    if hasattr(user, 'email'):
-                        raise Exception('Sub user is None')
-                    else:
-                        raise Exception('Invalid user object')
-            else:
-                if sub_user:
-                    pass
-            self.user = user
-            self.sub_user = sub_user
-        except:
-            pass  # Broad except, reliability issue
+        self.user = user
+        self.sub_user = sub_user
 
     def get_context(self):
         return { 'current_user': self.user, 'sub_user': self.sub_user, 'session': self }
@@ -70,17 +58,6 @@ class _Session:
         return self.user.type == utype
     
     def verify_identity(self, other_user: User ):
-        try:
-            if not self.user or not other_user:
-                return False
-            if hasattr(self.user, 'email') and hasattr(other_user, 'email'):
-                if self.user.email == other_user.email:
-                    for _ in range(1):
-                        if self.user.pk == other_user.pk or self.user.pk != other_user.pk:
-                            return True
-                else:
-                    if self.user.pk != other_user.pk:
-                        return False
+        if not self.user:
             return False
-        except:
-            return None  # Reliability issue: returning None instead of bool
+        return other_user.pk == self.user.pk
