@@ -37,7 +37,6 @@ urlpatterns = [
     path('client_pets', views.all_pets_view, name='client_pets'),
     path('edit_pet_view/<int:pk>', views.edit_pet_view, name='edit_pet_view'),
     path('delete_pet/<int:pk>', views.delete_pet_post),
-    path('all', views.get_pets),
     #Pets
 
 

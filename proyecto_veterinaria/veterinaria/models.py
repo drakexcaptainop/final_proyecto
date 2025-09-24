@@ -59,8 +59,8 @@ class User(models.Model):
 
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    specialization = models.CharField(max_length=100)  # Nuevo campo
-    years_of_experience = models.IntegerField()  # Nuevo campo
+    specialization = models.CharField(max_length=100, blank=True)  # Nuevo campo
+    years_of_experience = models.IntegerField(blank=True,default=2)  # Nuevo campo
 
     def json(self):
         return {

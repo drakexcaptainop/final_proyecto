@@ -3,6 +3,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from .models import Doctor, User, Client, models, USER_TYPE, Appointment, Pet, PetAllergy
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
 current_user: User = None
 current_client: Client = None
 INVALID = JsonResponse({'res': 'INVALID'})
@@ -16,11 +17,12 @@ def is_it_of( current: models.Model, target: models.Model, key: 'str' ):
         return None  
 
 ##
-def dummy(req):
+@require_GET
+def dummy(_):
     return DUMMY
 
-
-def not_logged_client(req):
+@require_GET
+def not_logged_client(_):
     return HttpResponse('Debe haber iniciado sesion')
 ##
 def is_already_registered( email ):
@@ -28,9 +30,11 @@ def is_already_registered( email ):
     return len(matches) > 0
     
 ## USERS GENERAL
-def get_users_api(req):
+@require_GET
+def get_users_api(_):
     return JsonResponse( [ user.json() for user in User.objects.all() ], safe=False )
 
+@require_POST
 @csrf_exempt
 def delete_user_api(req: HttpRequest):
     if req.method != 'POST':
@@ -44,7 +48,7 @@ def delete_user_api(req: HttpRequest):
         return INVALID
 
 ##
-
+@require_POST
 @csrf_exempt
 def login_client_api(req: HttpRequest):
     global current_user, current_client
@@ -59,6 +63,7 @@ def login_client_api(req: HttpRequest):
     else:
         return INVALID
 
+@require_POST
 @csrf_exempt
 def register_client_api(req: HttpRequest):
     name = req.POST['name']
@@ -80,6 +85,7 @@ def register_client_api(req: HttpRequest):
 
 
 ##DOCTOR
+@require_POST
 @csrf_exempt
 def register_doctor_api(req: HttpRequest):
     if req.method=='GET':
@@ -101,15 +107,17 @@ def register_doctor_api(req: HttpRequest):
 
     return OK
 
-@csrf_exempt
-def get_doctors_api(req):
+@require_GET
+def get_doctors_api(_):
     return JsonResponse( [doctor.json() for doctor in Doctor.objects.all()], safe=False  )
 
 
 ##CLIENT
+@require_GET
 def get_clients_api(req):
     return JsonResponse( [client.json() for client in Client.objects.all()], safe=False )
 
+@require_POST
 @csrf_exempt
 def delete_client_api(req, pk):
     print(f'{pk = }')
@@ -120,7 +128,7 @@ def delete_client_api(req, pk):
     else:
         return INVALID 
 
-
+@require_POST
 @csrf_exempt
 def insert_appointment_api(req: HttpRequest):
     if current_user and current_user.type == USER_TYPE.CLIENT:
@@ -142,15 +150,17 @@ def insert_appointment_api(req: HttpRequest):
     else:
         return INVALID
 
+@require_GET
 def get_appointments_api(req:HttpRequest):
     if current_user and current_user.type == USER_TYPE.CLIENT:
         appointments = Appointment.objects.filter( client = current_client )
         return JsonResponse( [ a.json() for a in appointments ], safe=False )
     else:
         return INVALID
-    
+
+@require_GET
 @csrf_exempt
-def delete_appointment_api(req: HttpRequest, pk):
+def delete_appointment_api(_: HttpRequest, pk):
     if  current_user:
         try:
             appointment = Appointment.objects.get( pk = pk, client = current_client )
@@ -164,12 +174,13 @@ def delete_appointment_api(req: HttpRequest, pk):
 
 
 ## PETS
-@csrf_exempt
+@require_GET
 def get_pets_api(req):
     if not current_client or req.method!='GET':
         return INVALID
     return JsonResponse( [pet.json() for pet in (Pet.objects.filter( client=current_client  ))], safe=False )
 
+@require_POST
 @csrf_exempt
 def delete_pet_api(req: HttpRequest, pk):
     if not current_client or req.method != 'POST':
@@ -177,6 +188,7 @@ def delete_pet_api(req: HttpRequest, pk):
     pet = Pet.objects.get( pk=pk, client=current_client )
     pet.delete()
     return OK
+@require_POST
 @csrf_exempt
 def edit_user(req: HttpRequest):
     pk = req.POST['pk']
@@ -187,6 +199,7 @@ def edit_user(req: HttpRequest):
     user.save()
     return OK
 
+@require_POST
 @csrf_exempt
 def edit_pet_base_api(req: HttpRequest, pk):
     if not current_user and req.method != 'POST':
@@ -202,6 +215,7 @@ def edit_pet_base_api(req: HttpRequest, pk):
     except Pet.DoesNotExist:
         return INVALID 
 
+@require_POST
 @csrf_exempt
 def insert_pet_api(req: HttpRequest):
     if not current_user or req.method != 'POST':
@@ -225,6 +239,7 @@ def insert_pet_api(req: HttpRequest):
     return OK
 
 ##PET.ALLERGY
+@require_GET
 def get_allergies_api(req: HttpResponse, pk: int):
     try:
         pet_target = Pet.objects.get( pk = pk )
@@ -234,6 +249,7 @@ def get_allergies_api(req: HttpResponse, pk: int):
     except Pet.DoesNotExist:
         return INVALID
 
+@require_POST
 @csrf_exempt
 def insert_allergy_api(req: HttpRequest, pk):
     try:

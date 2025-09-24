@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from . import models
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET, require_safe
 from .session_handle import _Session
 import logging
 
@@ -18,29 +18,33 @@ _DEBUG = False
 
 
 ##
+
+@require_GET
 def dummy(req, msg='DUMMY'):
     print(f"dummy called with msg={msg}")
     logger.debug(f"dummy view accessed with msg={msg}")
     return render( req, 'main/t2.html' )
 
-
+@require_GET
 def template2_test(req):
     print("template2_test called")
     logger.info("template2_test view accessed")
     return render(req, 'temp/test.html' )
 
+@require_GET
 def not_logged_client( _ ):
     return HttpResponse('Debe haber iniciado sesion')
 ##
  
 ##STATIC
 
+@require_GET
 def  blog_view(req):
     print("blog_view called")
     logger.info("blog_view accessed")
     return render( req, 'static_tmp/blog.html', {**session.get_context()} )
 
-def get_model_or_none( T: models.Model ,**kwargs ):
+def get_model_or_none( T: models.models.Model ,**kwargs ):
     print(f"get_model_or_none called for {T} with {kwargs}")
     logger.debug(f"get_model_or_none: {T}, {kwargs}")
     try:
@@ -81,7 +85,7 @@ def user_login( email, password ):
         current_client = session.sub_user
     return user, sub_user
 
-
+@require_POST
 def login_user(req: HttpRequest):
     print("login_user called")
     logger.info("login_user accessed")
@@ -96,6 +100,7 @@ def login_user(req: HttpRequest):
         print("redirecting to register_view")
         return redirect( register_view ) 
 
+@require_POST
 def login_client(req: HttpRequest):
     print("login_client called")
     logger.info("login_client accessed")
@@ -109,10 +114,11 @@ def login_client(req: HttpRequest):
 
 
 
-
+@require_GET
 def login_view(req:HttpRequest):
     return render(req, 'auth/auth.html', session.get_context())
 
+@require_GET
 def logout_post(_):
     print("logout_post called")
     logger.info("logout_post accessed")
@@ -125,16 +131,19 @@ def logout_post(_):
     logger.info("session logged out")
     return redirect( main )
 
+@require_GET
 def register_view(req: HttpRequest):
     print("register_view called")
     logger.info("register_view accessed")
     return render( req, 'login/register.html' )
 
+@require_GET
 def main(req: HttpRequest):
     print("main called")
     logger.info("main view accessed")
     return render(req, 'home/index.html', session.get_context())
 
+@require_POST
 def register_client(req: HttpRequest):
     print("register_client called")
     logger.info("register_client accessed")
@@ -166,7 +175,7 @@ def register_client(req: HttpRequest):
         return redirect(  login_view )
 
 ##CLIENT
-
+@require_GET
 def new_appointment_view(req: HttpRequest):
     print("new_appointment_view called")
     logger.info("new_appointment_view accessed")
@@ -182,7 +191,7 @@ def new_appointment_view(req: HttpRequest):
                                                                     'doctors': models.Doctor.objects.all(),
                                                                     'pets': client_pets})
 
-
+@require_POST
 def new_appointment_post(req: HttpRequest):
     print("new_appointment_post called")
     logger.info("new_appointment_post accessed")
@@ -205,6 +214,7 @@ def new_appointment_post(req: HttpRequest):
         print(REDIRECT_MSG)
         return redirect( login_view )
 
+@require_GET
 def all_appointments_view(req:HttpRequest):
     print("all_appointments_view called")
     logger.info("all_appointments_view accessed")
@@ -219,7 +229,7 @@ def all_appointments_view(req:HttpRequest):
         print(REDIRECT_MSG)
         return redirect( login_view )
     
-
+@require_POST
 def delete_appointment(_: HttpRequest, pk):
     print(f"delete_appointment called for pk={pk}")
     logger.info(f"delete_appointment accessed for pk={pk}")
@@ -232,6 +242,7 @@ def delete_appointment(_: HttpRequest, pk):
     else:
         return redirect( doctor_appointments_view )
 
+@require_GET
 def edit_appointment_view(req, pk):
     if not session.is_client_logged_prop:
         return redirect( login_view )
@@ -248,6 +259,7 @@ def edit_appointment_view(req, pk):
         'pets': client_pets
     } )
 
+@require_POST
 def edit_appointment_post(req:HttpRequest):
     print("edit_appointment_post called")
     logger.info("edit_appointment_post accessed")
@@ -277,12 +289,14 @@ def edit_appointment_post(req:HttpRequest):
         return redirect( login_view ) 
 
 ##
+@require_GET
 def client_main_view(req:HttpRequest):
     if session.is_logged():
         return render(req, 'client/profile.html', { **session.get_context() })
     else:
         return redirect( login_view )
 
+@require_POST
 def delete_client(req: HttpRequest):
     global current_user, current_client
     if not session.is_logged() or req.method != 'POST':
@@ -299,6 +313,7 @@ def delete_client(req: HttpRequest):
 
     return redirect( login_view )
 
+@require_POST
 def edit_client(req: HttpRequest):
     pk = int(req.POST['pk'])
     if session.user.pk != pk:
@@ -322,9 +337,11 @@ def edit_client(req: HttpRequest):
 
 
 ##PETS
+@require_GET
 def insert_pet_view(req: HttpRequest):
     return render(req, 'pet/insert_pet.html', {**session.get_context()})
 
+@require_GET
 def all_pets_view(req: HttpRequest):
     if not session.is_logged():
         return redirect( login_view )
@@ -367,6 +384,7 @@ def insert_pet_post(req:HttpRequest):
         return redirect( all_pets_view )
     
 
+@require_GET
 def edit_pet_view(req: HttpRequest, pk: int):
     if not session.is_logged():
         return redirect( login_view )
@@ -375,7 +393,7 @@ def edit_pet_view(req: HttpRequest, pk: int):
                                          'allergies': models.PetAllergy.objects.filter(pet = pet),
                                          'appointments': models.Appointment.objects.filter( pet = pet ),
                                          'vaccines': models.PetVaccine.objects.filter( pet = pet )})
-
+@require_POST
 def delete_pet_post(req: HttpRequest, pk: int):
     print(f"delete_pet_post called for pk={pk}")
     logger.info(f"delete_pet_post accessed for pk={pk}")
@@ -389,6 +407,7 @@ def delete_pet_post(req: HttpRequest, pk: int):
     logger.info("Pet deleted")
     return redirect( all_pets_view )
 
+@require_POST
 def insert_allergy_post(req: HttpRequest):
     print("insert_allergy_post called")
     logger.info("insert_allergy_post accessed")
@@ -402,6 +421,7 @@ def insert_allergy_post(req: HttpRequest):
     logger.info("Allergy saved")
     return redirect( edit_pet_view, pk=pk )
 
+@require_POST
 def delete_allergy_post(req: HttpRequest):
     print("delete_allergy_post called")
     logger.info("delete_allergy_post accessed")
@@ -416,6 +436,7 @@ def delete_allergy_post(req: HttpRequest):
 
 
  ## DOCTOR
+@require_POST
 def doctor_pet_search(req):
     print("doctor_pet_search called")
     logger.info("doctor_pet_search accessed")
@@ -427,11 +448,13 @@ def doctor_pet_search(req):
         pets = None
     return render( req, 'temp/doctor/pet/doctor_pet_search.html', {**session.get_context(), 'pets': pets} )
 
-def doctor_main_view(req: HttpRequest):
+@require_GET
+def doctor_main_view(_: HttpRequest):
     print("doctor_main_view called")
     logger.info("doctor_main_view accessed")
     return redirect( main )
 
+@require_GET
 def doctor_appointments_view(req: HttpRequest):
     print("doctor_appointments_view called")
     logger.info("doctor_appointments_view accessed")
@@ -443,7 +466,8 @@ def doctor_appointments_view(req: HttpRequest):
     print(f"Found {appointments.count()} appointments for doctor")
     return render(req, 'temp/doctor/doctor_appointments.html', {  **session.get_context(), 'appointments': 
                        [(appo.datetime.strftime("%d/%m/%Y, %H:%M:%S"), appo) for appo in  appointments] } )
-    
+
+@require_POST
 def doctor_appointment_view(req: HttpRequest):
     print("doctor_appointment_view called")
     logger.info("doctor_appointment_view accessed")
@@ -455,6 +479,7 @@ def doctor_appointment_view(req: HttpRequest):
     print(f"Viewing appointment {appo_pk}")
     return render( req, 'temp/doctor/doctor_appointment_view.html', {**session.get_context(), 'appointment': appointment} )
 
+@require_POST
 def doctor_end_appointment_post(req: HttpRequest):
     print("doctor_end_appointment_post called")
     logger.info("doctor_end_appointment_post accessed")
@@ -480,6 +505,7 @@ def doctor_end_appointment_post(req: HttpRequest):
     return redirect( doctor_appointments_view )
 
 
+@require_GET
 def doctor_pet_view(req, pk: int):
     if not session.is_doctor_logged_prop:
         return redirect( login_view )
@@ -494,6 +520,7 @@ def doctor_pet_view(req, pk: int):
                    'appointments': models.Appointment.objects.filter( pet = pet ),
                    'avl_vaccines': models.Vaccine.objects.all()} )
 
+@require_POST
 def insert_pet_vaccine_post(req):
     print("insert_pet_vaccine_post called")
     logger.info("insert_pet_vaccine_post accessed")
@@ -519,6 +546,7 @@ def insert_pet_vaccine_post(req):
     return redirect( doctor_pet_view, pk = pet_pk )
 
 ##DOCTORS - IND
+@require_GET
 def all_doctors_view(req: HttpRequest):
     return render( req, 'doctor/all_doctors.html', {**session.get_context(), 'doctors': models.Doctor.objects.all()} )
 
