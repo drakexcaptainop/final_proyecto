@@ -6,12 +6,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.decorators import api_view, permission_classes
+from typing import Optional
 
 
-current_user: User = None
-current_client: Client = None
+current_user: Optional[User] = None
+current_client: Optional[Client] = None
 INVALID = JsonResponse({'res': 'INVALID'})
 OK = JsonResponse( {'res': 'OK'} )
+
 DUMMY = JsonResponse({'res': 'NOT IMPLEMENTED'})
 def is_it_of( current: models.Model, target: models.Model, key: 'str' ):
     try:

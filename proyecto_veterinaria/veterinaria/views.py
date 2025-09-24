@@ -44,12 +44,12 @@ def  blog_view(req):
     logger.info("blog_view accessed")
     return render( req, 'static_tmp/blog.html', {**session.get_context()} )
 
-def get_model_or_none( T: models.models.Model ,**kwargs ):
-    print(f"get_model_or_none called for {T} with {kwargs}")
-    logger.debug(f"get_model_or_none: {T}, {kwargs}")
+def get_model_or_none( model_type: models.models.Model ,**kwargs ):
+    print(f"get_model_or_none called for {model_type} with {kwargs}")
+    logger.debug(f"get_model_or_none: {model_type}, {kwargs}")
     try:
-        found = T.objects.get( **kwargs )
-    except T.DoesNotExist as e:
+        found = model_type.objects.get( **kwargs )
+    except model_type.DoesNotExist as e:
         found = None
         if _DEBUG:
             print("Exception in get_model_or_none")
