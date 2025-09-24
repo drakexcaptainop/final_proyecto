@@ -81,6 +81,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "proyecto_veterinaria.wsgi.application"
 
+# settings.py
+INSTALLED_APPS += ["rest_framework_api_key"]
+
+REST_FRAMEWORK = {
+
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
